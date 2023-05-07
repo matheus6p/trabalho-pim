@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1683399976 source:d:\codelab\cursos\ads-faculdade\pim\pim4\pim4\trabalho pim\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+

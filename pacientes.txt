@@ -1,0 +1,13 @@
+Nome completo: 
+CPF: 1234567890Telefone: 1234567890Rua: jose antao
+Numero: 245
+Bairro: vila santana
+Cidade: sorocaba
+Estado: soCEP: 18080700
+Data de nascimento: 11/11/1111Data do diagnostico: Data do diagnostico: Comorbidades:
+  Diabetes: 0
+  Obesidade: 1
+  Hipertensão: 0
+  Tuberculose: 0
+  Outros: 0
+-----------------------------------------
