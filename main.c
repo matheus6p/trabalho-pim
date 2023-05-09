@@ -31,17 +31,64 @@ struct Paciente {
   struct Comorbidade comorbidade;
 };
 
+void listar_pacientes() {
+  FILE *fp;
+  char linha[100];
+
+  fp = fopen("paciente.txt", "r");
+
+  while (fgets(linha, 100, fp) != NULL) {
+      printf("%s", linha);
+  }
+
+  fclose(fp);
+}
+
+void menu() {
+  int opcao;
+    while(1) {
+      printf("Selecione uma opcao:\n");
+      printf("1-Cadastrar Paciente\n");
+      printf("2-Listar Pacientes\n");
+      printf("3-Sair\n");
+      scanf("%d", &opcao);
+      fflush(stdin);
+
+      switch(opcao) {
+        case 1:
+          system("cls");
+          cadastrar_paciente();
+          fflush(stdin);
+          break;
+        case 2:
+          listar_pacientes();
+          fflush(stdin);
+          break;
+        case 3:
+          printf("Saindo do programa...");
+          exit(0);
+        default:
+          printf("Opcao invalida, tente novamente!\n");
+          break;
+      }
+    }
+}
+
 void login() {
   char usuario[20], senha[20];
 
   printf("Digite o usuario: ");
-  scanf("%s", usuario);
+  fgets(usuario, 20, stdin);
+  strtok(usuario, "\n");
 
   printf("Digite a senha: ");
-  scanf("%s", senha);
+  fgets(senha, 20, stdin);
+  strtok(senha, "\n");
 
-  if(strcmp(usuario, "usuario") == 0 && strcmp(senha, "senha") == 0) {
+  if(strcmp(usuario, "medicina unip") == 0 && strcmp(senha, "unip") == 0) {
     printf("Login realizado com sucesso!\n");
+    system("cls");
+    menu();
   } else {
     printf("Usuario ou senha incorretos!\n");
   }
@@ -81,17 +128,16 @@ void salvar_paciente(struct Paciente *paciente, char *arquivo) {
   }
 
   fprintf(fp, "Nome completo: %s", paciente->nome);
-  fprintf(fp, "CPF: %s", paciente->cpf);
-  fprintf(fp, "Telefone: %s", paciente->telefone);
-  fprintf(fp, "Rua: %s", paciente->endereco.rua);
+  fprintf(fp, "CPF: %s\n", paciente->cpf);
+  fprintf(fp, "Telefone: %s\n", paciente->telefone);
+  fprintf(fp, "Rua: %s\n", paciente->endereco.rua);
   fprintf(fp, "Numero: %s", paciente->endereco.numero);
   fprintf(fp, "Bairro: %s", paciente->endereco.bairro);
   fprintf(fp, "Cidade: %s", paciente->endereco.cidade);
-  fprintf(fp, "Estado: %s", paciente->endereco.estado);
+  fprintf(fp, "Estado: %s\n", paciente->endereco.estado);
   fprintf(fp, "CEP: %s", paciente->endereco.cep);
-  fprintf(fp, "Data de nascimento: %s", paciente->data_nascimento);
-  fprintf(fp, "Data do diagnostico: %s", paciente->data_diagnostico);
-  fprintf(fp, "Data do diagnostico: %s", paciente->data_diagnostico);
+  fprintf(fp, "Data de nascimento: %s\n", paciente->data_nascimento);
+  fprintf(fp, "Data do diagnostico: %s\n", paciente->data_diagnostico);
   fprintf(fp, "Comorbidades:\n");
   fprintf(fp, "  Diabetes: %d\n", paciente->comorbidade.diabetes);
   fprintf(fp, "  Obesidade: %d\n", paciente->comorbidade.obesidade);
@@ -106,6 +152,7 @@ void salvar_paciente(struct Paciente *paciente, char *arquivo) {
 
 void cadastrar_paciente() {
   struct Paciente novoPaciente;
+  printf("CADASTRO DE PACIENTE\n");
 
   printf("Nome completo: ");
   fgets(novoPaciente.nome, 100, stdin);
@@ -151,6 +198,11 @@ void cadastrar_paciente() {
   getchar();
   fflush(stdin);
 
+  printf("Data do diagnostico (DD/MM/AAAA): ");
+  fgets(novoPaciente.data_diagnostico, 11, stdin);
+  getchar();
+  fflush(stdin);
+
   int idade = calcular_idade(novoPaciente.data_nascimento);
 
   printf("Comorbidade (0 - Nao / 1 - Sim):\n");
@@ -183,9 +235,9 @@ int main() {
   while(1) {
     printf("Selecione uma opcao:\n");
     printf("1-Login\n");
-    printf("2-Cadastro de paciente\n");
-    printf("3-Sair\n");
+    printf("2-Sair\n");
     scanf("%d", &opcao);
+    fflush(stdin);
 
     switch(opcao) {
       case 1:
@@ -193,10 +245,6 @@ int main() {
         fflush(stdin);
         break;
       case 2:
-        cadastrar_paciente();
-        fflush(stdin);
-        break;
-      case 3:
         printf("Saindo do programa...\n");
         exit(0);
       default:
