@@ -17,7 +17,7 @@ struct Comorbidade {
   int obesidade;
   int hipertensao;
   int tuberculose;
-  char outros[50];
+  int outros;
 };
 
 struct Paciente {
@@ -29,17 +29,24 @@ struct Paciente {
   char data_diagnostico[11];
   struct Endereco endereco;
   struct Comorbidade comorbidade;
+  int grupo_de_risco;
 };
 
-void listar_pacientes() {
-  FILE *fp;
-  char linha[100];
+void listar_pacientes(char *arquivo) {
+  FILE *fp = fopen(arquivo, "r");
 
-  fp = fopen("paciente.txt", "r");
-
-  while (fgets(linha, 100, fp) != NULL) {
-      printf("%s", linha);
+  if (fp == NULL) {
+    printf("Erro ao abrir o arquivo %s\n", arquivo);
+    return;
   }
+
+  printf("LISTA DE PACIENTES\n\n");
+  char linha[200];
+  while (fgets(linha, sizeof(linha), fp)) {
+    printf("%s", linha);
+  }
+
+  printf("\n");
 
   fclose(fp);
 }
@@ -61,7 +68,8 @@ void menu() {
           fflush(stdin);
           break;
         case 2:
-          listar_pacientes();
+          system("cls");
+          listar_pacientes("pacientes.txt");
           fflush(stdin);
           break;
         case 3:
@@ -111,11 +119,11 @@ int calcular_idade(char data_nascimento[]) {
   return idade;
 }
 
-int pertence_grupo_risco(int idade, int diabetes, int obesidade, int hipertensao, int tuberculose, char outros ) {
+int pertence_grupo_risco(struct Paciente *paciente, int idade, int diabetes, int obesidade, int hipertensao, int tuberculose, int outros ) {
   if(idade >= 65 || diabetes || obesidade || hipertensao || tuberculose) {
-    return 1;
+    return paciente->grupo_de_risco = 1;
   } else {
-    return 0;
+    return paciente->grupo_de_risco = 0;
   }
 }
 
@@ -127,7 +135,7 @@ void salvar_paciente(struct Paciente *paciente, char *arquivo) {
     return;
   }
 
-  fprintf(fp, "Nome completo: %s", paciente->nome);
+  fprintf(fp, "Nome: %s", paciente->nome);
   fprintf(fp, "CPF: %s\n", paciente->cpf);
   fprintf(fp, "Telefone: %s\n", paciente->telefone);
   fprintf(fp, "Rua: %s\n", paciente->endereco.rua);
@@ -141,9 +149,10 @@ void salvar_paciente(struct Paciente *paciente, char *arquivo) {
   fprintf(fp, "Comorbidades:\n");
   fprintf(fp, "  Diabetes: %d\n", paciente->comorbidade.diabetes);
   fprintf(fp, "  Obesidade: %d\n", paciente->comorbidade.obesidade);
-  fprintf(fp, "  Hipertensão: %d\n", paciente->comorbidade.hipertensao);
+  fprintf(fp, "  Hipertensao: %d\n", paciente->comorbidade.hipertensao);
   fprintf(fp, "  Tuberculose: %d\n", paciente->comorbidade.tuberculose);
-  fprintf(fp, "  Outros: %s", paciente->comorbidade.outros);
+  fprintf(fp, "  Outros: %d\n", paciente->comorbidade.outros);
+  fprintf(fp, "Pertence ao grupo de risco: %d\n", paciente->grupo_de_risco);
   fprintf(fp, "-----------------------------------------\n");
 
   fclose(fp);
@@ -226,6 +235,8 @@ void cadastrar_paciente() {
   fgets(novoPaciente.comorbidade.outros, 50, stdin);
   getchar();
 
+  int grupo_risco = pertence_grupo_risco(&novoPaciente, idade, novoPaciente.comorbidade.diabetes, novoPaciente.comorbidade.obesidade, novoPaciente.comorbidade.hipertensao, novoPaciente.comorbidade.tuberculose, novoPaciente.comorbidade.outros);
+
   salvar_paciente(&novoPaciente, "pacientes.txt");
 }
 
@@ -241,13 +252,16 @@ int main() {
 
     switch(opcao) {
       case 1:
+        system("cls");
         login();
         fflush(stdin);
         break;
       case 2:
+        system("cls");
         printf("Saindo do programa...\n");
         exit(0);
       default:
+        system("cls");
         printf("Opcao invalida, tente novamente. \n");
         break;
     }
